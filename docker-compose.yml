@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      # ai-module must be at /app/ai-module (sys.path resolves relative to /app)
+      - ./ai-module:/app/ai-module
+      - uploads_data:/app/uploads
+      - chroma_data:/app/chroma_db
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - SECRET_KEY=${SECRET_KEY:-change-me-in-production}
+      - DATABASE_URL=sqlite+aiosqlite:///./legal_doc_analyzer.db
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-3.1-flash-lite}
+      - GEMINI_FLASH_MODEL=${GEMINI_FLASH_MODEL:-gemini-3.1-flash-lite}
+      - GEMINI_EMBEDDING_MODEL=${GEMINI_EMBEDDING_MODEL:-models/gemini-embedding-001}
+      - UPLOAD_DIR=/app/uploads
+      - CHROMA_PERSIST_DIR=/app/chroma_db
+      - ALLOWED_ORIGINS=["http://localhost:5173","http://localhost:3000"]
+      - AI_MODULE_PATH=/app/ai-module
+      - LEGAL_REFERENCE_PDF=/app/ai-module/data/TTK.pdf
+      - ANONYMIZED_TELEMETRY=false
+      - CHROMA_TELEMETRY=false
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      # Used by vite.config.ts to route proxy to backend Docker service
+      - BACKEND_URL=http://backend:8000
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  uploads_data:
+  chroma_data:

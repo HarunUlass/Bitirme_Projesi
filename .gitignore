@@ -1,0 +1,165 @@
+# ============================================================
+# GİZLİ / HASSAS DOSYALAR (API Keys, Şifreler)
+# ============================================================
+.env
+.env.local
+.env.*.local
+backend/.env
+frontend/.env
+ai-module/.env
+
+# ============================================================
+# PYTHON - Backend & AI Module
+# ============================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+wheels/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Sanal ortamlar
+.venv/
+venv/
+env/
+ENV/
+backend/venv/
+backend/.venv/
+ai-module/venv/
+ai-module/.venv/
+
+# Test & Coverage
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+htmlcov/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# ============================================================
+# VERİTABANI DOSYALARI
+# ============================================================
+*.db
+*.sqlite
+*.sqlite3
+backend/legal_doc_analyzer.db
+
+# ============================================================
+# YÜKLENEN DOSYALAR (Kullanıcı Uploadları)
+# ============================================================
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# ============================================================
+# CHROMA VEKTÖRVERİTABANI
+# ============================================================
+backend/chroma_db/
+ai-module/chroma_db/
+chroma_db/
+
+# ============================================================
+# BÜYÜK VERİ DOSYALARI / AI Model Verileri
+# ============================================================
+# NOT: ai-module/data/*.pdf dosyaları (ör. TTK.pdf) proje için gereklidir, ignore edilmedi
+ai-module/data/*.csv
+!ai-module/data/.gitkeep
+*.bin
+*.pkl
+*.h5
+*.hdf5
+*.onnx
+*.pt
+*.pth
+*.safetensors
+
+# ============================================================
+# NODE.JS / FRONTEND
+# ============================================================
+node_modules/
+frontend/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Vite / Build çıktıları
+dist/
+dist-ssr/
+frontend/dist/
+frontend/dist-ssr/
+*.local
+
+# ============================================================
+# IDE & EDİTÖR
+# ============================================================
+.vscode/
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# VS Code AI kuralları (Codacy)
+.github/instructions/codacy.instructions.md
+
+# Qodo AI aracı
+.qodo/
+
+# ============================================================
+# LOG DOSYALARI
+# ============================================================
+*.log
+logs/
+backend/logs/
+frontend/logs/
+
+# ============================================================
+# DOCKER
+# ============================================================
+# .dockerignore projenin bir parçasıdır, ignore edilmedi
+
+# ============================================================
+# OS DOSYALARI
+# ============================================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
