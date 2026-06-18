@@ -144,8 +144,8 @@ Sistem, 6102 sayılı Türk Ticaret Kanunu (TTK) ve 6098 sayılı Türk Borçlar
 
 #### 1. Depoyu Klonlayın
 ```bash
-git clone <repo-url>
-cd Bitirme_Projesi_v2
+git clone https://github.com/HarunUlass/Bitirme_Projesi/
+cd Bitirme_Projesi
 ```
 
 #### 2. Ortam Değişkenlerini Ayarlayın
@@ -433,6 +433,55 @@ Bitirme_Projesi_v2/
 | `CHROMA_PERSIST_DIR` | — | `./chroma_db` | ChromaDB persist dizini |
 | `LEGAL_REFERENCE_PDF` | — | `/app/ai-module/data/TTK.pdf` | TTK PDF dosya yolu |
 | `ALLOWED_ORIGINS` | — | `localhost:5173, localhost:3000` | CORS izinli origin'ler |
+
+## Demo Açıklaması
+
+LegalDoc Analyzer'ın tipik bir kullanım senaryosu aşağıdaki adımlarla ilerler:
+
+### Adım 1 — Sisteme Giriş
+`http://localhost:5173` adresine gidin. Varsayılan admin hesabıyla (`admin@legaldoc.com` / `Admin123!`) veya yeni bir hesap oluşturarak giriş yapın.
+
+### Adım 2 — TTK Bilgi Tabanı Hazırlama (Admin — Tek Seferlik)
+Sol menüden **Admin Paneli**'ne gidin, **TTK Bilgi Tabanı** sekmesini açın:
+1. **"PDF'i Belleğe Yükle"** butonuna tıklayın → Sistem `TTK.pdf`'i okuyup ~600+ maddeye ayırır
+2. **"İndekslemeyi Başlat"** butonuna tıklayın → Maddeler Gemini Embedding API ile vektöre çevrilip ChromaDB'ye kaydedilir
+
+> Bu işlem bir kez yapılır. Sunucu yeniden başlatıldığında veriler otomatik yüklenir.
+
+### Adım 3 — Referans Sözleşme Ekleme (Admin — Opsiyonel)
+**Admin Paneli → Referans Sözleşmeler** sekmesinden örnek sözleşmeler (PDF/DOCX) yükleyin. Sistem bu sözleşmeleri RAG vektör veritabanına ekler; analiz sırasında yüklenen belgelerle karşılaştırma için kullanılır.
+
+### Adım 4 — Belge Yükleme
+Dashboard'da sürükle-bırak alanına ya da **"Dosya Seç"** butonu ile bir sözleşme (PDF, DOCX, görsel) yükleyin. Sistem arka planda:
+- Dosyayı diske kaydeder
+- pdfplumber / python-docx / OCR ile metni çıkarır
+- Belge durumunu `text_extracted` olarak günceller
+
+### Adım 5 — Analiz Başlatma
+Belge detay sayfasından **"Analiz Başlat"** butonuna tıklayın. Arka planda şu işlemler çalışır:
+1. RAG ile belgede geçen konulara ait TTK maddeleri ChromaDB'den getirilir
+2. `DOCUMENT_ANALYSIS_PROMPT` → Gemini API → Özet, taraflar, maddeler, ilk risk bayrakları
+3. `RISK_ANALYSIS_PROMPT` → Gemini API → Odaklanmış risk tespiti (TTK/TBK referanslı)
+4. `COMPARISON_PROMPT` → Benzer referans sözleşmelerle karşılaştırma
+5. Tüm sonuçlar veritabanına yazılır
+
+### Adım 6 — Analiz Sonuçlarını İnceleme
+Analiz tamamlandığında 4 sekmeli sonuç ekranı açılır:
+
+| Sekme | İçerik |
+|-------|--------|
+| **Özet** | Belge türü, taraflar, önemli tarihler, uyumluluk skoru (0-100), genel risk seviyesi |
+| **Riskler** | Kritik / Uyarı / Bilgi seviyeli risk bayrakları, ilgili TTK/TBK madde numaraları |
+| **Maddeler** | Her sözleşme maddesinin hukuki analizi ve risk değerlendirmesi |
+| **Karşılaştırma** | Referans sözleşmelerle benzerlik yüzdesi ve AI destekli fark analizi |
+
+### Adım 7 — PDF Raporu İndirme
+**"PDF Rapor İndir"** butonuna tıklayın. ReportLab ile oluşturulan, Türkçe karakter destekli, A4 formatında profesyonel analiz raporu indirilir. Rapor; özet, taraflar, risk tablosu, madde analizi ve öneriler bölümlerini içerir.
+
+### Adım 8 — Belge Üzerine Not Ekleme (Opsiyonel)
+Doküman görüntüleyicide belge sayfaları üzerine not, işaretleme ve bayrak eklenebilir.
+
+---
 
 ## Lisans
 
